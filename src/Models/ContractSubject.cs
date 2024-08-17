@@ -1,9 +1,5 @@
 ﻿namespace StronglyTypedId.Models
 {
-
-	public record ContractSubjectKey(int Id, int Rank);
-
-
 	public class ContractSubject
 	{
 		private int _id;    //overrules value on contractSubjectKey!

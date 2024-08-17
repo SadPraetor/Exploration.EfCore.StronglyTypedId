@@ -2,7 +2,6 @@
 
 namespace StronglyTypedId.Models
 {
-	public record ContractPartyKey(int Id, int ContractId);
 
 	public class ContractParty
 	{

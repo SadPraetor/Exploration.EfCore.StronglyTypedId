@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using StronglyTypedId.Data.Services;
 
 namespace StronglyTypedId.Models
 
@@ -8,8 +9,6 @@ namespace StronglyTypedId.Models
 	{
 		public void Configure(EntityTypeBuilder<Contract> builder)
 		{
-			//builder.ToTable(nameof(ContractContext.Contracts), tb => tb.HasTrigger("trg_UpdateContractNumberAfterInsert"));
-
 			builder.HasKey(c => new { c.Id, c.ContractNumber });
 
 			builder.Property(c => c.Id)
@@ -34,12 +33,8 @@ namespace StronglyTypedId.Models
 				.HasFilter($"[Branch] = '{nameof(ContractBranch.UnderRevision)}'");
 
 			builder.Property(c => c.ContractNumber)
-				//.HasDefaultValue(0)
-				//.HasDefaultValueSql();	//should work both ways, has default value
-				//.ValueGeneratedOnAdd()	//triggers read from database, assumption that db generates
-				//.HasValueGenerator<ContractNumberGenerator>()
-				.UseHiLo($"{nameof(ContractPartyRepresentative)}_Id", "con");
-			;
+				.ValueGeneratedNever()
+				.HasValueGenerator<ContractNumberGenerator>();
 
 			builder.Property(c => c.LastModified)
 				.ValueGeneratedNever();
@@ -58,25 +53,10 @@ namespace StronglyTypedId.Models
 			builder.Property(c => c.DueDate)
 				.IsRequired();
 
-
-			builder.HasOne(c => c.BranchedContract)
-				.WithOne()
-				.HasForeignKey<Contract>("_branchedContractId")
-				.HasPrincipalKey<Contract>(c => c.Id)
-				.IsRequired(false)
-				.OnDelete(DeleteBehavior.ClientSetNull);
-
-			builder.HasOne(c => c.SourceContract)
-				.WithOne()
-				.HasForeignKey<Contract>("_sourceContractId")
-				.HasPrincipalKey<Contract>(c => c.Id)
-				.IsRequired(false)
-				.OnDelete(DeleteBehavior.ClientSetNull);
-
 			builder.Property<int?>("_sourceContractId")
 				.HasColumnName("SourceContractId")
-				.UsePropertyAccessMode(PropertyAccessMode.Field)
-				;
+				.UsePropertyAccessMode(PropertyAccessMode.Field);
+
 			builder.Property<int?>("_branchedContractId")
 				.HasColumnName("BranchedContractId")
 				.UsePropertyAccessMode(PropertyAccessMode.Field);

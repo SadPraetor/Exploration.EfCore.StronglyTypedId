@@ -23,12 +23,7 @@ namespace StronglyTypedId.Models
 
 			clone.Id = default;
 			clone.Branch = ContractBranch.Revision;
-			clone.SourceContract = contract;
-			//clone.LazyLoader = contract.LazyLoader;
-			contract.BranchedContract = clone;
 			contract.Branch = ContractBranch.UnderRevision;
-
-
 			return output;
 		}
 
