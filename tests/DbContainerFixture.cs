@@ -1,4 +1,5 @@
 ﻿using DotNet.Testcontainers.Builders;
+using Microsoft.Data.SqlClient;
 using Testcontainers.MsSql;
 
 namespace StronglyTypedId.Tests
@@ -11,8 +12,15 @@ namespace StronglyTypedId.Tests
 	public class DbContainerFixture : IAsyncLifetime
 	{
 		private MsSqlContainer _container;
-
 		public MsSqlContainer Container => _container;
+
+		public SqlConnection GetConnection()
+		{
+			SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(_container.GetConnectionString());
+			builder.InitialCatalog = "DEV";
+			builder.PersistSecurityInfo = true; //to allow .EnsureDeleted() to work
+			return new SqlConnection(builder.ConnectionString);
+		}
 
 		public async Task InitializeAsync()
 		{
