@@ -1,7 +1,6 @@
-﻿using FluentAssertions;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StronglyTypedId.Data;
-using StronglyTypedId.Models;
 
 namespace StronglyTypedId.Tests
 {
@@ -10,6 +9,10 @@ namespace StronglyTypedId.Tests
 	{
 		protected readonly DbContainerFixture _fixture;
 		private readonly ContractContext _dbContext;
+		protected SqlConnection GetSqlConnection() => _fixture.GetConnection();
+		protected ContractContext CreateDbContext() => new ContractContext(new DbContextOptionsBuilder<ContractContext>()
+			.UseSqlServer(_fixture.GetConnection())
+				.Options);
 
 		public TestBase(DbContainerFixture fixture)
 		{
@@ -24,75 +27,10 @@ namespace StronglyTypedId.Tests
 		public void Dispose()
 		{
 			_dbContext.Database.EnsureDeleted();
+			_dbContext.Dispose();
 		}
 
-		[Fact]
-		public async Task DbCreationCheck()
-		{
-			var dbContext = new ContractContext(new DbContextOptionsBuilder<ContractContext>()
-			.UseSqlServer(_fixture.GetConnection())
-				.Options);
 
-			var contracts = dbContext.Contracts.Count();
 
-			contracts.Should().Be(0);
-
-			var contract = new Contract()
-			{
-				DueDate = DateTime.Now.AddDays(5),
-				SignatureDate = DateTime.Now,
-				Amount = 1000,
-				Branch = ContractBranch.Master,
-				ProductType = ProductType.Loan,
-				State = ContractState.Draft
-			};
-
-			_dbContext.Contracts.Add(contract);
-
-			_dbContext.SaveChanges();
-
-			dbContext = new ContractContext(new DbContextOptionsBuilder<ContractContext>()
-				.UseSqlServer(_fixture.GetConnection())
-				.Options);
-
-			var contractsAfter = dbContext.Contracts.Count();
-
-			contractsAfter.Should().Be(1);
-		}
-
-		[Fact]
-		public async Task DbCreationDoubleCheck()
-		{
-
-			var dbContext = new ContractContext(new DbContextOptionsBuilder<ContractContext>()
-			.UseSqlServer(_fixture.GetConnection())
-				.Options);
-
-			var contracts = dbContext.Contracts.Count();
-
-			contracts.Should().Be(0);
-
-			var contract = new Contract()
-			{
-				DueDate = DateTime.Now.AddDays(5),
-				SignatureDate = DateTime.Now,
-				Amount = 1000,
-				Branch = ContractBranch.Master,
-				ProductType = ProductType.Loan,
-				State = ContractState.Draft
-			};
-
-			_dbContext.Contracts.Add(contract);
-
-			_dbContext.SaveChanges();
-
-			dbContext = new ContractContext(new DbContextOptionsBuilder<ContractContext>()
-				.UseSqlServer(_fixture.GetConnection())
-				.Options);
-
-			var contractsAfter = dbContext.Contracts.Count();
-
-			contractsAfter.Should().Be(1);
-		}
 	}
 }
