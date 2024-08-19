@@ -99,7 +99,17 @@ namespace StronglyTypedId.Data.Migrations
                         .HasDatabaseName("INDEX IX_Contracts_ContractNumber_UnderRevision")
                         .HasFilter("[Branch] = 'UnderRevision'");
 
-                    b.HasIndex("ContractNumber", "Branch");
+					b.HasIndex("Id")
+						.IsUnique()
+						.HasDatabaseName("INDEX IX_Contracts_ContractNumber_Master")
+						.HasFilter("[Branch] = 'Master'");
+
+					b.HasIndex("Id")
+						.IsUnique()
+						.HasDatabaseName("INDEX IX_Contracts_ContractNumber_Revision")
+						.HasFilter("[Branch] = 'Revision'");
+
+					b.HasIndex("ContractNumber", "Branch");
 
                     b.ToTable("Contracts", "con");
                 });
