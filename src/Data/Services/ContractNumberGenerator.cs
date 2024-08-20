@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using StronglyTypedId.Models;
@@ -19,7 +20,8 @@ namespace StronglyTypedId.Data.Services
 
 			string sqlCommand = PickSequence(entry);
 
-			var connection = entry.Context.Database.GetDbConnection();
+			var cnnString = entry.Context.Database.GetConnectionString();
+			var connection = new SqlConnection(cnnString);
 
 			try
 			{
@@ -59,7 +61,8 @@ namespace StronglyTypedId.Data.Services
 
 			string sqlCommand = PickSequence(entry);
 
-			var connection = entry.Context.Database.GetDbConnection();
+			var cnnString = entry.Context.Database.GetConnectionString();
+			var connection = new SqlConnection(cnnString);
 
 			try
 			{
