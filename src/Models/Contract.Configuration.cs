@@ -9,32 +9,53 @@ namespace StronglyTypedId.Models
 	{
 		public void Configure(EntityTypeBuilder<Contract> builder)
 		{
-			builder.HasKey(c => new { c.Id, c.ContractNumber });
+			builder.HasKey("_id", "_contractNumber");
 
-			builder.Property(c => c.Id)
+			builder.OwnsOne(
+				c => c.Key,
+				ob =>
+			{
+				ob.WithOwner()
+				.HasPrincipalKey("_id", "_contractNumber")
+				.HasForeignKey(k => new { k.Id, k.ContractNumber });
+
+				ob.Property<int>(k => k.Id)
+					.HasColumnName("Id");
+
+				ob.Property<int>(k => k.ContractNumber)
+					.HasColumnName("ContractNumber");
+
+				ob.HasKey(k => new { k.Id, k.ContractNumber });
+			});
+
+			builder.Property<int>("_id")
+				.HasColumnName("Id")
 				.UseIdentityColumn(1, 1);
 
-			builder.HasIndex(c => new { c.ContractNumber, c.Branch })
+			builder.Property<int>("_contractNumber")
+				.HasColumnName("ContractNumber")
+				.ValueGeneratedNever()
+				.HasValueGenerator<ContractNumberGenerator>();
+
+			builder.HasIndex("_contractNumber", nameof(Contract.Branch))
 				.IsUnique(false);
 
-			builder.HasIndex(c => c.Id)
+			builder.HasIndex("_id")
 				.IsUnique(true)
 				.HasDatabaseName($"INDEX IX_Contracts_ContractNumber_{nameof(ContractBranch.Master)}")
 				.HasFilter($"[Branch] = '{nameof(ContractBranch.Master)}'");
 
-			builder.HasIndex(c => c.Id)
+			builder.HasIndex("_id")
 				.IsUnique(true)
 				.HasDatabaseName($"INDEX IX_Contracts_ContractNumber_{nameof(ContractBranch.Revision)}")
 				.HasFilter($"[Branch] = '{nameof(ContractBranch.Revision)}'");
 
-			builder.HasIndex(c => c.Id)
+			builder.HasIndex("_id")
 				.IsUnique(true)
 				.HasDatabaseName($"INDEX IX_Contracts_ContractNumber_{nameof(ContractBranch.UnderRevision)}")
 				.HasFilter($"[Branch] = '{nameof(ContractBranch.UnderRevision)}'");
 
-			builder.Property(c => c.ContractNumber)
-				.ValueGeneratedNever()
-				.HasValueGenerator<ContractNumberGenerator>();
+
 
 			builder.Property(c => c.LastModified)
 				.ValueGeneratedNever();

@@ -21,7 +21,8 @@ namespace StronglyTypedId.Models
 			var output = contract.Clone<Contract>()!;
 			var clone = output.Clone;
 
-			clone.Id = default;
+			//TODO rework
+			//clone.Key.Id = default;
 			clone.Branch = ContractBranch.Revision;
 			contract.Branch = ContractBranch.UnderRevision;
 			return output;

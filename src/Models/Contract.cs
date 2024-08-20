@@ -1,14 +1,20 @@
-﻿namespace StronglyTypedId.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StronglyTypedId.Models
 {
+
 	public class Contract
 	{
+		[SetsRequiredMembers]
 		public Contract()
 		{
-
+			Key = new ContractKey(default, default);
 		}
+		private int _id;
+		private int _contractNumber;
+		public required ContractKey Key { get; init; }
 
-		public int Id { get; set; }
-		public int ContractNumber { get; private set; }
+
 		public ContractBranch Branch { get; set; }
 		public ContractState State { get; set; }
 		public decimal Amount { get; set; }
