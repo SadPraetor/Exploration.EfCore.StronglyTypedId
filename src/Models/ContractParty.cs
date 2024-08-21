@@ -10,6 +10,8 @@ namespace StronglyTypedId.Models
 		private int _contractNumber;  //overrules value on key!
 		public required ContractPartyKey Key { get; init; }
 
+		public Contract Contract { get; set; } = default!;
+
 		public string Name { get; set; } = default!;
 
 		[SetsRequiredMembers]

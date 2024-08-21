@@ -22,5 +22,7 @@ namespace StronglyTypedId.Models
 		public ProductType ProductType { get; set; }
 		public DateTime DueDate { get; set; }
 		public DateTime LastModified { get; }
+
+		public List<ContractParty> ContractParties { get; set; }
 	}
 }

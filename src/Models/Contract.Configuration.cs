@@ -81,6 +81,12 @@ namespace StronglyTypedId.Models
 			builder.Property<int?>("_branchedContractId")
 				.HasColumnName("BranchedContractId")
 				.UsePropertyAccessMode(PropertyAccessMode.Field);
+
+			builder.HasMany<ContractParty>(c => c.ContractParties)
+				.WithOne(cp => cp.Contract)
+				.HasForeignKey("_contractId", "_contractNumber")
+				.HasPrincipalKey("_id", "_contractNumber")
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }
