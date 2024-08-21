@@ -20,9 +20,9 @@ namespace StronglyTypedId.Models
 		[SetsRequiredMembers]
 		public ContractPartyRepresentative(ContractParty contractParty)
 		{
-			_contractPartyId = contractParty.Key.Id;
+			_contractPartyId = contractParty.Key.ContractPartyId;
 			_contractId = contractParty.Key.ContractId;
-			Key = new ContractPartyRepresentativeKey(0, contractParty.Key.Id, contractParty.Key.ContractId);
+			Key = new ContractPartyRepresentativeKey(0, contractParty.Key.ContractPartyId, contractParty.Key.ContractId);
 		}
 	}
 }

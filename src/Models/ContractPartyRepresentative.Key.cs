@@ -4,7 +4,7 @@
 	{
 		public static implicit operator ContractPartyKey(ContractPartyRepresentativeKey key)
 		{
-			return new ContractPartyKey(key.ContractPartyId, key.ContractId);
+			return new ContractPartyKey(key.ContractPartyId, key.ContractId, 0);
 		}
 	}
 }

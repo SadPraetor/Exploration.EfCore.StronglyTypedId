@@ -1,4 +1,4 @@
 ﻿namespace StronglyTypedId.Models
 {
-	public record ContractKey(int Id, int ContractNumber);
+	public record ContractKey(int ContractId, int ContractNumber);
 }

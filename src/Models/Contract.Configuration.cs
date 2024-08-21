@@ -13,19 +13,19 @@ namespace StronglyTypedId.Models
 
 			builder.OwnsOne(
 				c => c.Key,
-				ob =>
+				nb =>
 			{
-				ob.WithOwner()
+				nb.WithOwner()
 				.HasPrincipalKey("_id", "_contractNumber")
-				.HasForeignKey(k => new { k.Id, k.ContractNumber });
+				.HasForeignKey(k => new { k.ContractId, k.ContractNumber });
 
-				ob.Property<int>(k => k.Id)
+				nb.Property<int>(k => k.ContractId)
 					.HasColumnName("Id");
 
-				ob.Property<int>(k => k.ContractNumber)
+				nb.Property<int>(k => k.ContractNumber)
 					.HasColumnName("ContractNumber");
 
-				ob.HasKey(k => new { k.Id, k.ContractNumber });
+				nb.HasKey(k => new { k.ContractId, k.ContractNumber });
 			});
 
 			builder.Property<int>("_id")

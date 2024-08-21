@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StronglyTypedId.Data;
 
@@ -11,9 +12,11 @@ using StronglyTypedId.Data;
 namespace StronglyTypedId.Data.Migrations
 {
     [DbContext(typeof(ContractContext))]
-    partial class ContractContextModelSnapshot : ModelSnapshot
+    [Migration("20240821195513_ContractParty_ContractNumber")]
+    partial class ContractParty_ContractNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

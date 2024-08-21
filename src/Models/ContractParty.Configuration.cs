@@ -18,16 +18,22 @@ namespace StronglyTypedId.Models
 				nb =>
 				{
 					nb.WithOwner()
-					.HasPrincipalKey("_id", "_contractId")
-					.HasForeignKey(k => new { k.Id, k.ContractId });
+						.HasPrincipalKey("_id", "_contractId", "_contractNumber")
+						.HasForeignKey(cp => new { cp.ContractPartyId, cp.ContractId, cp.ContractNumber });
 
-					nb.Property(x => x.Id)
+					nb.Property(k => k.ContractPartyId)
 						.HasColumnName("Id")
 						.ValueGeneratedNever();
 
-					nb.Property(x => x.ContractId)
-					.HasColumnName("ContractId")
-					.ValueGeneratedNever();
+					nb.Property(k => k.ContractId)
+						.HasColumnName("ContractId")
+						.ValueGeneratedNever();
+
+					nb.Property(k => k.ContractNumber)
+						.HasColumnName("ContractNumber")
+						.ValueGeneratedNever();
+
+					nb.HasKey(k => new { k.ContractPartyId, k.ContractId, k.ContractNumber });
 				}
 			);
 
@@ -37,9 +43,12 @@ namespace StronglyTypedId.Models
 
 			builder.Property<int>("_contractId")
 				.HasColumnName("ContractId");
-			//.ValueGeneratedNever();
 
-			builder.HasKey("_id", "_contractId");
+			builder.Property<int>("_contractNumber")
+				.HasColumnName("ContractNumber");
+
+
+			builder.HasKey("_id", "_contractId", "_contractNumber");
 
 			builder.HasMany<ContractPartyRepresentative>(x => x.Representatives)
 				.WithOne()

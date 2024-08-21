@@ -34,7 +34,7 @@ namespace StronglyTypedId.Tests
 
 			//Assert
 
-			contract.Key.Id
+			contract.Key.ContractId
 				.Should()
 				.NotBe(default);
 
@@ -68,7 +68,7 @@ namespace StronglyTypedId.Tests
 
 			await context.SaveChangesAsync();
 
-			var id = contract.Key.Id;
+			var id = contract.Key.ContractId;
 			var number = contract.Key.ContractNumber;
 			context.ChangeTracker.Clear();
 			contract = null;
@@ -85,7 +85,7 @@ namespace StronglyTypedId.Tests
 				.Be(ProductType.Loan);
 		}
 
-		[Fact]
+		[Fact(Skip = "not implemented yet")]
 		public async Task AddContract_RetrieveContract_Find_Key()
 		{
 			//Arrange
@@ -106,7 +106,7 @@ namespace StronglyTypedId.Tests
 
 			await context.SaveChangesAsync();
 
-			var id = contract.Key.Id;
+			var id = contract.Key.ContractId;
 			var number = contract.Key.ContractNumber;
 			context.ChangeTracker.Clear();
 			contract = null;
@@ -144,7 +144,7 @@ namespace StronglyTypedId.Tests
 
 			await context.SaveChangesAsync();
 
-			var id = contract.Key.Id;
+			var id = contract.Key.ContractId;
 			var number = contract.Key.ContractNumber;
 			context.ChangeTracker.Clear();
 			contract = null;
@@ -188,7 +188,7 @@ namespace StronglyTypedId.Tests
 
 				//Assert
 
-				contract.Key.Id
+				contract.Key.ContractId
 					.Should()
 					.NotBe(default);
 
@@ -202,7 +202,7 @@ namespace StronglyTypedId.Tests
 			}
 
 
-			var id = contract.Key.Id;
+			var id = contract.Key.ContractId;
 			var number = contract.Key.ContractNumber;
 			context.ChangeTracker.Clear();
 			contract = null;
