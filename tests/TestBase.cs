@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using StronglyTypedId.Data;
+using StronglyTypedId.Data.Infrastructure;
 using Xunit.Abstractions;
 
 namespace StronglyTypedId.Tests
@@ -15,6 +16,7 @@ namespace StronglyTypedId.Tests
 		protected ContractContext CreateDbContext() => new ContractContext(new DbContextOptionsBuilder<ContractContext>()
 			.UseSqlServer(_fixture.GetConnection())
 			.LogTo(_output.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+			.AddInterceptors(new KeyQueryExpressionVisitor())
 				.Options);
 
 		public TestBase(DbContainerFixture fixture, ITestOutputHelper output)
