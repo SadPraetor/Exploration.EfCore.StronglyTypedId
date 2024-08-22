@@ -1,13 +1,14 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using StronglyTypedId.Models;
+using Xunit.Abstractions;
 
 namespace StronglyTypedId.Tests
 {
 	[Collection(nameof(StronglyTypedIdTestCollection))]
 	public class ContractTests : TestBase
 	{
-		public ContractTests(DbContainerFixture fixture) : base(fixture)
+		public ContractTests(DbContainerFixture fixture, ITestOutputHelper output) : base(fixture, output)
 		{
 		}
 
@@ -218,6 +219,47 @@ namespace StronglyTypedId.Tests
 
 			contract!.ProductType.Should()
 				.Be(ProductType.Loan);
+		}
+
+		[Fact]
+		public async Task AddByRoot_RetrieveContract_ByContractPartyKey()
+		{
+			//Arrange
+			var contract = new Contract
+			{
+				Amount = 1000,
+				Branch = ContractBranch.Master,
+				DueDate = DateTime.Now,
+				ProductType = ProductType.Loan,
+				SignatureDate = DateTime.Now,
+				State = ContractState.Active,
+				ContractParties = new List<ContractParty>
+				{
+					new ContractParty
+					{
+						Name = "John Doe",
+					}
+				}
+			};
+
+
+			//Act
+			var context = CreateDbContext();
+			context.Contracts.Add(contract);
+			await context.SaveChangesAsync();
+
+			var contractPartyKey = contract.ContractParties[0].Key;
+
+			context.ChangeTracker.Clear();
+
+			var retrieved = await context.Set<Contract>()
+				.FirstOrDefaultAsync(c => c.Key == contractPartyKey);
+
+			//Assert
+
+			retrieved.Key.ContractId
+				.Should()
+				.NotBe(default);
 		}
 	}
 }

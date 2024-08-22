@@ -1,12 +1,13 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using StronglyTypedId.Models;
+using Xunit.Abstractions;
 
 namespace StronglyTypedId.Tests
 {
 	public class ContractPartyTests : TestBase
 	{
-		public ContractPartyTests(DbContainerFixture fixture) : base(fixture)
+		public ContractPartyTests(DbContainerFixture fixture, ITestOutputHelper output) : base(fixture, output)
 		{
 		}
 
@@ -193,5 +194,7 @@ namespace StronglyTypedId.Tests
 				.Should()
 				.NotBe(default);
 		}
+
+
 	}
 }
