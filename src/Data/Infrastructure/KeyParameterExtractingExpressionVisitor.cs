@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using StronglyTypedId.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace StronglyTypedId.Data.Infrastructure
@@ -14,9 +16,34 @@ namespace StronglyTypedId.Data.Infrastructure
 		{
 		}
 
+		[return: NotNullIfNotNull("expression")]
+		public override Expression? Visit(Expression? expression)
+		{
+			var result = base.Visit(expression);
+
+			if (expression is null)
+			{
+				return result;
+			}
+
+			if (expression.NodeType == ExpressionType.MemberAccess && expression.Type == typeof(ContractKey))
+			{
+				Console.WriteLine("breakpoint");
+			}
+
+			return result;
+		}
+
 		protected override Expression VisitMember(MemberExpression node)
 		{
-			return base.VisitMember(node);
+			var result = base.VisitMember(node);
+
+			if (node is MemberExpression member)
+			{
+
+			}
+
+			return result;
 		}
 
 		protected override Expression VisitConstant(ConstantExpression node)
