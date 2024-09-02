@@ -28,6 +28,9 @@ namespace StronglyTypedId.Data.Infrastructure
 
 			if (expression.NodeType == ExpressionType.MemberAccess && expression.Type == typeof(ContractKey))
 			{
+				var member = MemberExpression.Property(expression, nameof(ContractKey.ContractId));
+				ExtractParameters(member);
+				return result;
 				Console.WriteLine("breakpoint");
 			}
 
