@@ -59,12 +59,11 @@ namespace StronglyTypedId.Data.Infrastructure
 
 				//### default
 				var left = Expression.Property(memberExpression, properties[0].Name);
-				var property = MemberExpression.Property(parameterExpression, properties[0].Name);
-				var right = Expression.Lambda(property, parameterExpression);
+				var right = Expression.Parameter(typeof(int), "__contractKey_ContractId_keyProperty");
 
 
 
-				var attempt = Expression.MakeBinary(node.NodeType, left, right.Body);
+				var attempt = Expression.MakeBinary(node.NodeType, left, right);
 				var visited = Visit(attempt);
 				return visited;
 
