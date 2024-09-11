@@ -1,4 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using StronglyTypedId.Data.Infrastructure;
 using StronglyTypedId.Models;
 
 namespace StronglyTypedId.Data
@@ -17,6 +21,22 @@ namespace StronglyTypedId.Data
 				new DbContextOptionsBuilder<ContractContext>()
 				.UseSqlServer(cnnString)
 				.Options);
+		}
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			var services = new ServiceCollection();
+			services.AddEntityFrameworkSqlServer();
+
+			var descriptor = new ServiceDescriptor(typeof(IQueryCompiler),
+typeof(InterceptingQueryCompiler),
+			lifetime: ServiceLifetime.Scoped);
+			services.Replace(descriptor);
+			var serviceProvider = services.BuildServiceProvider();
+
+			optionsBuilder.UseInternalServiceProvider(serviceProvider);
+
+			base.OnConfiguring(optionsBuilder);
 		}
 
 		protected override void OnModelCreating(ModelBuilder builder)
