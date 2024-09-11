@@ -18,6 +18,19 @@ namespace StronglyTypedId.Data.Infrastructure
 			var left = Visit(node.Left);
 			var right = Visit(node.Right);
 
+			if (node.Left.NodeType == ExpressionType.MemberAccess &&
+				node.Right.NodeType == ExpressionType.MemberAccess &&
+				_ownedTypes.Value.ContainsKey(node.Left.Type) &&
+				_ownedTypes.Value.ContainsKey(node.Right.Type) &&
+				AreRelated(node.Left.Type, node.Right.Type, out var commonBase)
+				)
+			{
+				var properties = _ownedTypes.Value[commonBase!]
+					.GetProperties()
+					.ToList();
+			}
+
+
 			var result = (left.NodeType, right.NodeType) switch
 			{
 				(ExpressionType.MemberAccess, ExpressionType.Parameter) => Test((left as MemberExpression)!, (right as ParameterExpression)!, node),
@@ -29,6 +42,27 @@ namespace StronglyTypedId.Data.Infrastructure
 			return result;
 		}
 
+
+		private bool AreRelated(Type left, Type right, out Type? commonBase)
+		{
+			switch (left, right)
+			{
+				case ({ BaseType: not null }, { BaseType: null }) when left.BaseType.Equals(right):
+					commonBase = right;
+					return true;
+
+
+				case ({ BaseType: null }, { BaseType: not null }) when right.BaseType.Equals(left):
+					commonBase = left;
+					return true;
+
+
+				default:
+					commonBase = null;
+					return false;
+
+			}
+		}
 
 
 		private Expression Test(MemberExpression memberExpression, ParameterExpression parameterExpression, BinaryExpression node)
