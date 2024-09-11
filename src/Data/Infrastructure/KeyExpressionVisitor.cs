@@ -25,9 +25,26 @@ namespace StronglyTypedId.Data.Infrastructure
 				AreRelated(node.Left.Type, node.Right.Type, out var commonBase)
 				)
 			{
+				Expression replacement = null;
+
 				var properties = _ownedTypes.Value[commonBase!]
 					.GetProperties()
 					.ToList();
+
+				foreach (var prop in properties)
+				{
+					var leftProperty = Expression.Property(left, prop.Name);
+					var rightProperty = Expression.Property(left, prop.Name);
+
+					var equality = Expression.Equal(leftProperty, rightProperty);
+
+					replacement = replacement is null ? equality : Expression.AndAlso(replacement, equality);
+
+				}
+
+
+				return Visit(replacement);
+
 			}
 
 
@@ -47,12 +64,12 @@ namespace StronglyTypedId.Data.Infrastructure
 		{
 			switch (left, right)
 			{
-				case ({ BaseType: not null }, { BaseType: null }) when left.BaseType.Equals(right):
+				case ({ BaseType: not null }, _) when left.BaseType.Equals(right):
 					commonBase = right;
 					return true;
 
 
-				case ({ BaseType: null }, { BaseType: not null }) when right.BaseType.Equals(left):
+				case (_, { BaseType: not null }) when right.BaseType.Equals(left):
 					commonBase = left;
 					return true;
 

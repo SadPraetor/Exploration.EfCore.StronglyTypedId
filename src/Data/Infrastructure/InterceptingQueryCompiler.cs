@@ -43,7 +43,7 @@ namespace StronglyTypedId.Data.Infrastructure
 
 			var replacement = visitor.Visit(expression);
 
-			return expression;
+			return replacement;
 		}
 	}
 }
