@@ -26,3 +26,4 @@ public class Contract
 	public record ContractKey(int ContractId, int ContractNumber);
 }
 ```
+to be continued...
