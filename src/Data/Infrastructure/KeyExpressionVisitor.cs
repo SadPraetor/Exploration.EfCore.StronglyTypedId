@@ -18,16 +18,17 @@ namespace StronglyTypedId.Data.Infrastructure
 			var left = Visit(node.Left);
 			var right = Visit(node.Right);
 
-			if (node.Left.NodeType == ExpressionType.MemberAccess &&
-				node.Right.NodeType == ExpressionType.MemberAccess &&
+			if (node.Left.NodeType is ExpressionType.MemberAccess &&
+				node.Right.NodeType is ExpressionType.MemberAccess &&
 				_ownedTypes.Value.ContainsKey(node.Left.Type) &&
 				_ownedTypes.Value.ContainsKey(node.Right.Type) &&
-				AreRelated(node.Left.Type, node.Right.Type, out var commonBase)
+				AreRelated((MemberExpression)node.Left, (MemberExpression)node.Right, out var commonBase) &&
+				NeedsAdjustment(commonBase!)
 				)
 			{
 				Expression replacement = null;
 
-				var properties = _ownedTypes.Value[commonBase!]
+				var properties = _ownedTypes.Value[commonBase!.Type]
 					.GetProperties()
 					.ToList();
 
@@ -43,7 +44,7 @@ namespace StronglyTypedId.Data.Infrastructure
 				}
 
 
-				return Visit(replacement);
+				return Visit(replacement)!;
 
 			}
 
@@ -59,17 +60,21 @@ namespace StronglyTypedId.Data.Infrastructure
 			return result;
 		}
 
-
-		private bool AreRelated(Type left, Type right, out Type? commonBase)
+		private bool NeedsAdjustment(MemberExpression commonType)
 		{
-			switch (left, right)
+			return commonType.Expression.NodeType is ExpressionType.Constant;
+		}
+
+		private bool AreRelated(MemberExpression left, MemberExpression right, out MemberExpression? commonBase)
+		{
+			switch (left.Type, right.Type)
 			{
-				case ({ BaseType: not null }, _) when left.BaseType.Equals(right):
+				case ({ BaseType: not null }, _) when left.Type.BaseType.Equals(right.Type):
 					commonBase = right;
 					return true;
 
 
-				case (_, { BaseType: not null }) when right.BaseType.Equals(left):
+				case (_, { BaseType: not null }) when right.Type.BaseType.Equals(left.Type):
 					commonBase = left;
 					return true;
 
