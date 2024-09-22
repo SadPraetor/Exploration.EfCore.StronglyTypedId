@@ -248,11 +248,15 @@ namespace StronglyTypedId.Tests
 			context.Contracts.Add(contract);
 			await context.SaveChangesAsync();
 
-			var contractPartyKey = contract.ContractParties[0].Key;
+			var contractPartyKey = new ContractPartyKey(
+				contract.ContractParties[0].Key.ContractPartyId,
+				contract.ContractParties[0].Key.ContractId,
+				contract.ContractParties[0].Key.ContractNumber);
 
 			context.ChangeTracker.Clear();
 
 			var retrieved = await context.Set<Contract>()
+				.Include(c => c.ContractParties)
 				.FirstOrDefaultAsync(c => c.Key == contractPartyKey);
 
 			//Assert
@@ -260,6 +264,23 @@ namespace StronglyTypedId.Tests
 			retrieved.Key.ContractId
 				.Should()
 				.NotBe(default);
+
+			retrieved.Key.ContractId
+				.Should()
+				.Be(contractPartyKey.ContractId);
+
+			retrieved.ContractParties
+				.Should()
+				.NotBeNullOrEmpty()
+				.And
+				.HaveCount(1);
+
+			retrieved.ContractParties[0]
+				.Key
+				.ContractPartyId
+				.Should()
+				.Be(contractPartyKey.ContractPartyId);
+
 		}
 	}
 }

@@ -171,6 +171,10 @@ namespace StronglyTypedId.Tests
 					new ContractParty
 					{
 						Name = "John Doe",
+					},
+					new ContractParty
+					{
+						Name = "Jane Doe"
 					}
 				}
 			};
@@ -181,18 +185,37 @@ namespace StronglyTypedId.Tests
 			context.Contracts.Add(contract);
 			await context.SaveChangesAsync();
 
-			var contractKey = contract.Key;
+			var contractKey = new ContractKey(contract.Key.ContractId, contract.Key.ContractNumber);
 
 			context.ChangeTracker.Clear();
 
 			var retrieved = await context.Set<ContractParty>()
-				.FirstOrDefaultAsync(c => c.Key == contractKey);
+				.Include(c => c.Contract)
+				.Where(c => c.Key == contractKey)
+				.ToListAsync();
 
 			//Assert
 
-			retrieved.Key.ContractId
+			retrieved
 				.Should()
-				.NotBe(default);
+				.NotBeNullOrEmpty()
+				.And
+				.HaveCount(2);
+
+			retrieved[0]
+				.Contract
+				.Should()
+				.NotBeNull();
+
+			retrieved[0].Contract.Key.ContractId
+				.Should()
+				.Be(contractKey.ContractId);
+
+			retrieved[0].Contract.Key
+				.Should()
+				.Be(contractKey);
+
+
 		}
 
 
