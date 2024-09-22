@@ -52,8 +52,8 @@ namespace StronglyTypedId.Models
 
 			builder.HasMany<ContractPartyRepresentative>(x => x.Representatives)
 				.WithOne()
-				.HasForeignKey("_contractPartyId", "_contractId")
-				.HasPrincipalKey("_id", "_contractId")
+				.HasForeignKey("_contractPartyId", "_contractId", "_contractNumber")
+				.HasPrincipalKey("_id", "_contractId", "_contractNumber")
 				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}

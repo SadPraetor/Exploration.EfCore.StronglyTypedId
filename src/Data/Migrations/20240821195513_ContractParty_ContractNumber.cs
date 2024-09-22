@@ -41,7 +41,7 @@ namespace StronglyTypedId.Data.Migrations
 				columns: new[] { "Id", "ContractId", "ContractNumber" });
 
 			migrationBuilder.AddForeignKey(
-				name: "FK_ContractPartyRepresentatives_ContractParties_ContractPartyId_ContractId_ContractNumber",
+				name: "FK_ContractPartyRepresentatives_ContractParties_ContractPartyId_ContractId",
 				schema: "con",
 				table: "ContractPartyRepresentatives",
 				columns: new[] { "ContractPartyId", "ContractId" },
@@ -81,7 +81,7 @@ namespace StronglyTypedId.Data.Migrations
 				columns: new[] { "Id", "ContractId" });
 
 			migrationBuilder.AddForeignKey(
-				name: "FK_ContractPartyRepresentatives_ContractParties_ContractPartyId_ContractId_ContractNumber",
+				name: "FK_ContractPartyRepresentatives_ContractParties_ContractPartyId_ContractId",
 				schema: "con",
 				table: "ContractPartyRepresentatives",
 				columns: new[] { "ContractPartyId", "ContractId" },

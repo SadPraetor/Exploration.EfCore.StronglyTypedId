@@ -18,8 +18,8 @@ namespace StronglyTypedId.Models
 				nb =>
 				{
 					nb.WithOwner()
-					.HasPrincipalKey("_id", "_contractPartyId", "_contractId") //causes actually duplication of columns in generated migration
-					.HasForeignKey(k => new { k.Id, k.ContractPartyId, k.ContractId });
+					.HasPrincipalKey("_id", "_contractPartyId", "_contractId", "_contractNumber") //causes actually duplication of columns in generated migration
+					.HasForeignKey(k => new { k.Id, k.ContractPartyId, k.ContractId, k.ContractNumber });
 
 					nb.Property(x => x.Id)
 						.HasColumnName("Id")
@@ -33,7 +33,11 @@ namespace StronglyTypedId.Models
 					.HasColumnName("ContractId")
 					.ValueGeneratedNever();
 
-					nb.HasKey(x => new { x.Id, x.ContractPartyId, x.ContractId });
+					nb.Property(x => x.ContractNumber)
+					.HasColumnName("ContractNumber")
+					.ValueGeneratedNever();
+
+					nb.HasKey(x => new { x.Id, x.ContractPartyId, x.ContractId, x.ContractNumber });
 				}
 			);
 
@@ -43,14 +47,16 @@ namespace StronglyTypedId.Models
 
 
 			builder.Property<int>("_contractPartyId")
-				.HasColumnName("ContractPartyId")
-				.ValueGeneratedNever();
+				.HasColumnName("ContractPartyId");
+
 
 			builder.Property<int>("_contractId")
-				.HasColumnName("ContractId")
-				.ValueGeneratedNever();
+				.HasColumnName("ContractId");
 
-			builder.HasKey("_id", "_contractPartyId", "_contractId");
+			builder.Property<int>("_contractNumber")
+				.HasColumnName("ContractNumber");
+
+			builder.HasKey("_id", "_contractPartyId", "_contractId", "_contractNumber");
 		}
 	}
 }
