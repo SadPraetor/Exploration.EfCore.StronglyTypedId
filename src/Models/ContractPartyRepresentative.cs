@@ -13,10 +13,11 @@ namespace StronglyTypedId.Models
 
 		public string Name { get; set; } = default!;
 
-
-		public ContractPartyRepresentative()
+		[SetsRequiredMembers]
+		public ContractPartyRepresentative(string name)
 		{
-
+			Name = name;
+			Key = new ContractPartyRepresentativeKey(default, default, default, default);
 		}
 
 		[SetsRequiredMembers]
